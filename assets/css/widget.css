@@ -1,0 +1,78 @@
+/* Core layers on top of builders/themes */
+.msds-pw-popup, .msds-pw-overlay, .msds-pw-button { z-index: 9999999 !important; }
+
+/* Floating Button */
+.msds-pw-button {
+  position: fixed;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  border: none;
+  background: var(--msds-pw-bg, #1f2937);
+  color: var(--msds-pw-fg, #ffffff);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+  transition: transform .25s ease, opacity .25s ease, box-shadow .25s ease;
+}
+.msds-pw-button:hover { transform: scale(1.08); box-shadow: 0 6px 16px rgba(0,0,0,0.3); }
+
+/* Positions */
+.msds-pw-button.pos-br { bottom: 30px; right: 30px; }
+.msds-pw-button.pos-bl { bottom: 30px; left: 30px; }
+.msds-pw-button.pos-tr { top: 30px; right: 30px; }
+.msds-pw-button.pos-tl { top: 30px; left: 30px; }
+
+/* Fallback icon */
+.msds-pw-svg { width: 28px; height: 28px; fill: currentColor; }
+
+/* Overlay */
+.msds-pw-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  opacity: 0;
+  transition: opacity .25s ease;
+}
+.msds-pw-overlay:not([hidden]) { opacity: 1; }
+
+/* Popup */
+.msds-pw-popup {
+  position: fixed;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+  width: 90%;
+  max-width: 420px;
+  max-height: 90%;
+  overflow-y: auto;
+  padding: 20px;
+  transition: opacity .25s ease, transform .25s ease;
+}
+.msds-pw-popup.pos-br { bottom: 100px; right: 30px; }
+.msds-pw-popup.pos-bl { bottom: 100px; left: 30px; }
+.msds-pw-popup.pos-tr { top: 100px; right: 30px; }
+.msds-pw-popup.pos-tl { top: 100px; left: 30px; }
+
+.msds-pw-popup[hidden] { opacity: 0; transform: scale(0.95); pointer-events: none; }
+
+/* Popup inner */
+.msds-pw-popup__header { margin-bottom: 10px; }
+
+.msds-pw-close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 28px;
+  height: 28px;
+  border: none;
+  border-radius: 50%;
+  background: #eee;
+  font-size: 18px;
+  cursor: pointer;
+  color: #333;
+}
+.msds-pw-close:hover { background: #ddd; }
