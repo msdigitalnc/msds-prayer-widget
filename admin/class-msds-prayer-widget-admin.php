@@ -1,5 +1,6 @@
 <?php
 namespace MSDS_PW;
+
 if ( ! defined( 'ABSPATH' ) ) exit;
 
 class Admin {
@@ -31,12 +32,22 @@ class Admin {
 
         add_settings_section( 'main', __( 'Widget Settings', 'msds-prayer-widget' ), '__return_false', 'msds-prayer-widget' );
 
-        add_settings_field( 'position',    __( 'Position', 'msds-prayer-widget' ), [ $this, 'field_position'   ], 'msds-prayer-widget', 'main' );
+        add_settings_field( 'position', __( 'Position', 'msds-prayer-widget' ), [ $this, 'field_position' ], 'msds-prayer-widget', 'main' );
         add_settings_field( 'icon_bg_color', __( 'Icon Background Color', 'msds-prayer-widget' ), [ $this, 'field_bg' ], 'msds-prayer-widget', 'main' );
-        add_settings_field( 'icon_color',  __( 'Icon Color', 'msds-prayer-widget' ), [ $this, 'field_fg'       ], 'msds-prayer-widget', 'main' );
-        add_settings_field( 'icon_class',  __( 'Icon Class (Font Awesome)', 'msds-prayer-widget' ), [ $this, 'field_class'    ], 'msds-prayer-widget', 'main' );
-        add_settings_field( 'gf_form_id',  __( 'Gravity Form ID', 'msds-prayer-widget' ), [ $this, 'field_gf' ], 'msds-prayer-widget', 'main' );
-        add_settings_field( 'exclusions',  __( 'Page/Post Exclusions (IDs, comma-separated)', 'msds-prayer-widget' ), [ $this, 'field_ex' ], 'msds-prayer-widget', 'main' );
+        add_settings_field( 'icon_color', __( 'Icon Color', 'msds-prayer-widget' ), [ $this, 'field_fg' ], 'msds-prayer-widget', 'main' );
+        add_settings_field( 'icon_class', __( 'Icon Class (Font Awesome)', 'msds-prayer-widget' ), [ $this, 'field_class' ], 'msds-prayer-widget', 'main' );
+        add_settings_field( 'gf_form_id', __( 'Gravity Form ID', 'msds-prayer-widget' ), [ $this, 'field_gf' ], 'msds-prayer-widget', 'main' );
+
+        // ✅ New field for tooltip override
+        add_settings_field(
+            'tooltip_text',
+            __( 'Override Tooltip Text', 'msds-prayer-widget' ),
+            [ $this, 'field_tooltip' ],
+            'msds-prayer-widget',
+            'main'
+        );
+
+        add_settings_field( 'exclusions', __( 'Page/Post Exclusions (IDs, comma-separated)', 'msds-prayer-widget' ), [ $this, 'field_ex' ], 'msds-prayer-widget', 'main' );
     }
 
     public function sanitize_options( $input ) {
@@ -48,6 +59,7 @@ class Admin {
         $out['icon_color']    = sanitize_hex_color( $input['icon_color'] ?? '#ffffff' ) ?: '#ffffff';
         $out['icon_class']    = sanitize_text_field( $input['icon_class'] ?? '' );
         $out['gf_form_id']    = absint( $input['gf_form_id'] ?? 0 );
+        $out['tooltip_text']  = sanitize_text_field( $input['tooltip_text'] ?? 'Prayer Request' );
 
         $ex = array_filter( array_map( 'trim', explode( ',', $input['exclusions'] ?? '' ) ) );
         $out['exclusions'] = implode( ',', array_map( 'absint', $ex ) );
@@ -90,7 +102,6 @@ class Admin {
         return ob_get_clean();
     }
 
-    // Fields
     public function field_position() {
         $o = get_option( 'msds_prayer_widget_options', [] );
         $v = $o['position'] ?? 'bottom-right';
@@ -129,6 +140,13 @@ class Admin {
         $o = get_option( 'msds_prayer_widget_options', [] );
         $v = absint( $o['gf_form_id'] ?? 0 );
         echo '<input type="number" name="msds_prayer_widget_options[gf_form_id]" value="' . $v . '" class="small-text" min="0" />';
+    }
+
+    // ✅ Tooltip override input field
+    public function field_tooltip() {
+        $o = get_option( 'msds_prayer_widget_options', [] );
+        $v = esc_attr( $o['tooltip_text'] ?? 'Prayer Request' );
+        echo '<input type="text" name="msds_prayer_widget_options[tooltip_text]" value="' . $v . '" class="regular-text" placeholder="e.g. Prayer Request" />';
     }
 
     public function field_ex() {
